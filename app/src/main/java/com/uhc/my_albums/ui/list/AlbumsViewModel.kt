@@ -59,7 +59,7 @@ class AlbumsViewModel @Inject constructor(
     }
 
     fun disposeElements() {
-        if (null != disposableObserver && !disposableObserver.isDisposed) disposableObserver.dispose()
+        if (!disposableObserver.isDisposed) disposableObserver.dispose()
     }
 
 }

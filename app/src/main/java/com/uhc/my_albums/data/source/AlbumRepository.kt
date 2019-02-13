@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 
 class AlbumRepository @Inject constructor(
-    val apiInterface: ApiInterface,
-    val albumsDao: AlbumsDao, val utils: Utils
+    private val apiInterface: ApiInterface,
+    private val albumsDao: AlbumsDao, val utils: Utils
 ) {
 
     fun getAlbums(limit: Int, offset: Int): Observable<List<Album>> {
@@ -26,22 +26,22 @@ class AlbumRepository @Inject constructor(
         else observableFromDb
     }
 
-    fun getAlbumsFromApi(): Observable<List<Album>> {
+    private fun getAlbumsFromApi(): Observable<List<Album>> {
         return apiInterface.getAlbums()
             .doOnNext {
-                Log.e("REPOSITORY API * ", it.size.toString())
+                Log.e("REPOSITORY API SIZE: ", it.size.toString())
                 for (item in it) {
                     albumsDao.insertAlbum(item)
                 }
             }
     }
 
-    fun getAlbumsFromDb(limit: Int, offset: Int): Observable<List<Album>> {
+    private fun getAlbumsFromDb(limit: Int, offset: Int): Observable<List<Album>> {
         return albumsDao.queryAlbums(limit, offset)
             .toObservable()
             .doOnNext {
                 //Print log it.size :)
-                Log.e("REPOSITORY DB *** ", it.size.toString())
+                Log.e("REPOSITORY DB SIZE: ", it.size.toString())
             }
     }
 }

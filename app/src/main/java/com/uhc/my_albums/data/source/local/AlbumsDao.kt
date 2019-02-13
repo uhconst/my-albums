@@ -10,7 +10,7 @@ import io.reactivex.Single
 @Dao
 interface AlbumsDao {
 
-  @Query("SELECT * FROM albums limit :limit offset :offset")
+  @Query("SELECT * FROM albums ORDER BY title limit :limit offset :offset")
   fun queryAlbums(limit:Int, offset:Int): Single<List<Album>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)

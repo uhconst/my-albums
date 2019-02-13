@@ -54,7 +54,7 @@ class AlbumsActivity : AppCompatActivity() {
             if (it != null) {
                 Toast.makeText(
                     this, resources.getString(R.string.album_error_message) + it,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
             }
         })

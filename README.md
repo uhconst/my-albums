@@ -1,5 +1,5 @@
 # MyAlbums
-Android application using MVVM to displays albums list sorted by title.
+Android application using MVVM to display albums list sorted by title.
 Albums are persisted for offline viewing
 
 ## Libraries used in this project

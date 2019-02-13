@@ -29,7 +29,7 @@ class AlbumRepository @Inject constructor(
     private fun getAlbumsFromApi(): Observable<List<Album>> {
         return apiInterface.getAlbums()
             .doOnNext {
-                Log.e("REPOSITORY API SIZE: ", it.size.toString())
+                Log.i("REPOSITORY API SIZE: ", it.size.toString())
                 for (item in it) {
                     albumsDao.insertAlbum(item)
                 }
@@ -41,7 +41,7 @@ class AlbumRepository @Inject constructor(
             .toObservable()
             .doOnNext {
                 //Print log it.size :)
-                Log.e("REPOSITORY DB SIZE: ", it.size.toString())
+                Log.i("REPOSITORY DB SIZE: ", it.size.toString())
             }
     }
 }

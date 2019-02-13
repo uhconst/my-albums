@@ -7,6 +7,6 @@ import retrofit2.http.GET
 
 interface ApiInterface {
 
-  @GET("albums/")
-  fun getAlbums(): Observable<List<Album>>
+    @GET("albums/")
+    fun getAlbums(): Observable<List<Album>>
 }

@@ -16,50 +16,50 @@ class AlbumsViewModel @Inject constructor(
     private val abumRepository: AlbumRepository
 ) : ViewModel() {
 
-  var albumsResult: MutableLiveData<List<Album>> = MutableLiveData()
-  var albumsError: MutableLiveData<String> = MutableLiveData()
-  var albumsLoader: MutableLiveData<Boolean> = MutableLiveData()
-  lateinit var disposableObserver: DisposableObserver<List<Album>>
+    var albumsResult: MutableLiveData<List<Album>> = MutableLiveData()
+    var albumsError: MutableLiveData<String> = MutableLiveData()
+    var albumsLoader: MutableLiveData<Boolean> = MutableLiveData()
+    lateinit var disposableObserver: DisposableObserver<List<Album>>
 
-  fun albumsResult(): LiveData<List<Album>> {
-    return albumsResult
-  }
-
-  fun albumsError(): LiveData<String> {
-    return albumsError
-  }
-
-  fun albumsLoader(): LiveData<Boolean> {
-    return albumsLoader
-  }
-
-  fun loadAlbums(limit: Int, offset: Int ) {
-
-    disposableObserver = object : DisposableObserver<List<Album>>() {
-      override fun onComplete() {
-
-      }
-
-      override fun onNext(albums: List<Album>) {
-        albumsResult.postValue(albums)
-        albumsLoader.postValue(false)
-      }
-
-      override fun onError(e: Throwable) {
-        albumsError.postValue(e.message)
-        albumsLoader.postValue(false)
-      }
+    fun albumsResult(): LiveData<List<Album>> {
+        return albumsResult
     }
 
-    abumRepository.getAlbums(limit, offset)
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .debounce(400, MILLISECONDS)
-        .subscribe(disposableObserver)
-  }
+    fun albumsError(): LiveData<String> {
+        return albumsError
+    }
 
-  fun disposeElements(){
-    if(null != disposableObserver && !disposableObserver.isDisposed) disposableObserver.dispose()
-  }
+    fun albumsLoader(): LiveData<Boolean> {
+        return albumsLoader
+    }
+
+    fun loadAlbums(limit: Int, offset: Int) {
+
+        disposableObserver = object : DisposableObserver<List<Album>>() {
+            override fun onComplete() {
+
+            }
+
+            override fun onNext(albums: List<Album>) {
+                albumsResult.postValue(albums)
+                albumsLoader.postValue(false)
+            }
+
+            override fun onError(e: Throwable) {
+                albumsError.postValue(e.message)
+                albumsLoader.postValue(false)
+            }
+        }
+
+        abumRepository.getAlbums(limit, offset)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .debounce(400, MILLISECONDS)
+            .subscribe(disposableObserver)
+    }
+
+    fun disposeElements() {
+        if (null != disposableObserver && !disposableObserver.isDisposed) disposableObserver.dispose()
+    }
 
 }

@@ -7,6 +7,6 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class BuildersModule {
 
-  @ContributesAndroidInjector
-  abstract fun contributeAlbumsActivity(): AlbumsActivity
+    @ContributesAndroidInjector
+    abstract fun contributeAlbumsActivity(): AlbumsActivity
 }

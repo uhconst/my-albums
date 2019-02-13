@@ -20,64 +20,67 @@ import javax.inject.Inject
 
 class AlbumsActivity : AppCompatActivity() {
 
-  @Inject
-  lateinit var albumsViewModelFactory: AlbumsViewModelFactory
-  var albumsAdapter = AlbumsAdapter(ArrayList())
-  lateinit var albumsViewModel: AlbumsViewModel
-  var currentPage = 0
+    @Inject
+    lateinit var albumsViewModelFactory: AlbumsViewModelFactory
+    var albumsAdapter = AlbumsAdapter(ArrayList())
+    lateinit var albumsViewModel: AlbumsViewModel
+    var currentPage = 0
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(layout.activity_albums)
-    AndroidInjection.inject(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(layout.activity_albums)
+        AndroidInjection.inject(this)
 
-    initializeRecycler()
+        initializeRecycler()
 
-    albumsViewModel = ViewModelProviders.of(this, albumsViewModelFactory).get(
-        AlbumsViewModel::class.java)
+        albumsViewModel = ViewModelProviders.of(this, albumsViewModelFactory).get(
+            AlbumsViewModel::class.java
+        )
 
-    progressBar.visibility = View.VISIBLE
-    loadData()
+        progressBar.visibility = View.VISIBLE
+        loadData()
 
-    albumsViewModel.albumsResult().observe(this,
-        Observer<List<Album>> {
-          if (it != null) {
-            val position = albumsAdapter.itemCount
-            albumsAdapter.addAlbums(it)
-            recycler.adapter = albumsAdapter
-            recycler.scrollToPosition(position - Constants.LIST_SCROLLING)
-          }
+        albumsViewModel.albumsResult().observe(this,
+            Observer<List<Album>> {
+                if (it != null) {
+                    val position = albumsAdapter.itemCount
+                    albumsAdapter.addAlbums(it)
+                    recycler.adapter = albumsAdapter
+                    recycler.scrollToPosition(position - Constants.LIST_SCROLLING)
+                }
+            })
+
+        albumsViewModel.albumsError().observe(this, Observer<String> {
+            if (it != null) {
+                Toast.makeText(
+                    this, resources.getString(R.string.album_error_message) + it,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         })
 
-    albumsViewModel.albumsError().observe(this, Observer<String> {
-      if (it != null) {
-        Toast.makeText(this, resources.getString(R.string.album_error_message) + it,
-            Toast.LENGTH_SHORT).show()
-      }
-    })
-
-    albumsViewModel.albumsLoader().observe(this, Observer<Boolean> {
-      if (it == false) progressBar.visibility = View.GONE
-    })
-  }
-
-  private fun initializeRecycler() {
-    val gridLayoutManager = GridLayoutManager(this, 1)
-    gridLayoutManager.orientation = LinearLayoutManager.VERTICAL
-    recycler.apply {
-      setHasFixedSize(true)
-      layoutManager = gridLayoutManager
-      addOnScrollListener(InfiniteScrollListener({ loadData() }, gridLayoutManager))
+        albumsViewModel.albumsLoader().observe(this, Observer<Boolean> {
+            if (it == false) progressBar.visibility = View.GONE
+        })
     }
-  }
 
-  fun loadData() {
-    albumsViewModel.loadAlbums(Constants.LIMIT, currentPage * Constants.OFFSET)
-    currentPage++
-  }
+    private fun initializeRecycler() {
+        val gridLayoutManager = GridLayoutManager(this, 1)
+        gridLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        recycler.apply {
+            setHasFixedSize(true)
+            layoutManager = gridLayoutManager
+            addOnScrollListener(InfiniteScrollListener({ loadData() }, gridLayoutManager))
+        }
+    }
 
-  override fun onDestroy() {
-    albumsViewModel.disposeElements()
-    super.onDestroy()
-  }
+    fun loadData() {
+        albumsViewModel.loadAlbums(Constants.LIMIT, currentPage * Constants.OFFSET)
+        currentPage++
+    }
+
+    override fun onDestroy() {
+        albumsViewModel.disposeElements()
+        super.onDestroy()
+    }
 }

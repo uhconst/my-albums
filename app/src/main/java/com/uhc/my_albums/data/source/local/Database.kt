@@ -6,5 +6,5 @@ import com.uhc.my_albums.data.Album
 
 @Database(entities = arrayOf(Album::class), version = 8)
 abstract class Database : RoomDatabase() {
-  abstract fun albumsDao(): AlbumsDao
+    abstract fun albumsDao(): AlbumsDao
 }
